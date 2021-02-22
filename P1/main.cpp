@@ -1,7 +1,12 @@
-//Snippet at https://git.dei.uc.pt/snippets/25
-
 #include <iostream>
 
+/**
+ * Prints the board!
+ * This functions is used only for debug purposes
+ *
+ * @param board 2d array with the board state.
+ * @param size  size of the board (size*size).
+ */
 void PrintBoard(int board[20][20], int size){
     std::cout << "\n";
 
@@ -11,6 +16,19 @@ void PrintBoard(int board[20][20], int size){
         }
         std::cout << "\n";
     }
+}
+
+/**
+ * Makes the move in the choosed direction, if possible
+ *
+ * @param board 2d array with the board state.
+ * @param size  size of the board (size*size).
+ * @param direction  Direction of thr move 'u'p, 'd'own, 'r'ightnand 'l'eft.
+ * @return bool - if the move changed anything in matrix.
+ */
+bool Move(int board[20][20], int size, char direction){
+    
+    return false;
 }
 
 int main() {
