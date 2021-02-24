@@ -1,6 +1,4 @@
 #include <iostream>
-#include <chrono> 
-using namespace std::chrono;
 
 int minimum_slides;
 
@@ -208,9 +206,8 @@ void BackTracking(int board[20][20], int size, int max_moves, int depth) {
     if (!isEqual(board, new_board, size)) { BackTracking(new_board, size, max_moves, depth + 1); }
 }
 
-int main(int argc, char** argv) {
+int main() {
     // We probably do not need this but it is faster
-    auto start = high_resolution_clock::now();
     std::ios_base::sync_with_stdio(0);
     std::cin.tie(0);
 
@@ -253,11 +250,7 @@ int main(int argc, char** argv) {
 
         BackTracking(board, board_size, max_moves, 0);
 
-        minimum_slides <= max_moves ? std::cout << minimum_slides << "\n" : std::cout << "no solution\n";
-        auto stop = high_resolution_clock::now();
-        if (argc > 1 && argv[0] == "-t") {
-            std::cout << "time: " << (stop - start).count() << " s\n";
-        }
+        minimum_slides <= max_moves ? std::cout << minimum_slides << "\n" : std::cout << "no solution\n";  
     }
 
 
