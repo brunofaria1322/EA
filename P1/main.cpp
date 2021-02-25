@@ -187,7 +187,7 @@ void BackTracking(int board[20][20], int size, int max_moves, int depth) {
         return;
     };
 
-    if (depth >= max_moves) { return; }
+    if (depth == max_moves || depth == minimum_slides - 1) { return; }
 
     CopyBoard(board, new_board, size);
     Move(new_board, size, 'u');
