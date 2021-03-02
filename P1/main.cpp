@@ -18,6 +18,7 @@ class Game{
         int max_moves;
         int min_slides = 51;
         int board_size;
+        char moves[4] = {'u', 'r', 'd', 'l'};
         BoardState initial_state;
 
         Game(BoardState init_state, int brd_size, int max_plays){
@@ -35,25 +36,14 @@ class Game{
 
             if (current.moves == max_moves || current.moves == min_slides - 1) { return; }
             
-            BoardState temp = copyBoardState(current);
-            temp = makeMove(temp, 'u');
-
-            if (!isEqual(current, temp)) { solve(temp); }
-
-            temp = copyBoardState(current);
-            temp = makeMove(temp, 'r');
-
-            if (!isEqual(current, temp)) { solve(temp); }
-
-            temp = copyBoardState(current);
-            temp = makeMove(temp, 'd');
-
-            if (!isEqual(current, temp)) { solve(temp); }
-
-            temp = copyBoardState(current);
-            temp = makeMove(temp, 'l');
+            BoardState temp;
             
-            if (!isEqual(current, temp)) { solve(temp); }
+            for (int i = 0; i < 4; i++) {
+                temp = copyBoardState(current);
+                temp = makeMove(temp, moves[i]);
+                if (!isEqual(current, temp)) { solve(temp); }
+            }
+            
         }
 
         BoardState copyBoardState(BoardState previous){
