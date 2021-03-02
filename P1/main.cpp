@@ -1,12 +1,17 @@
 #include <iostream>
-
-class BoardState{
+#include <unordered_set>
+ class BoardState{
     public:
         int moves;
         int board[20][20];
 };
 
 void PrintBoard(int board[20][20], int size);
+void PrintSet (std::unordered_set<int> s){
+    for (std::unordered_set<int>::iterator it = s.begin(); it != s.end(); it++) {
+        std::cout << *it << ' ';
+    }
+}
 
 class Game{
     public:
@@ -240,6 +245,9 @@ int main() {
     int num_tests, board_size, max_moves;
     std::cin >> num_tests;
 
+    std::unordered_set<int> values;     //set to figure out if initial board is possible. 
+    int temp;
+
     for (int i = 0; i < num_tests; i++) {
         std::cin >> board_size;
         std::cin >> max_moves;
@@ -247,16 +255,35 @@ int main() {
         BoardState initial_board;
         initial_board.moves=0;
 
+        values.clear();
+
         for (int j = 0; j < board_size; j++) {
             for (int k = 0; k < board_size; k++) {
-                std::cin >> initial_board.board[j][k];
+                std::cin >> temp;
+                initial_board.board[j][k] = temp;
+
+                if (temp != 0){
+
+                    while (values.find(temp) != values.end()) {
+                        values.erase(temp);
+                        temp *= 2;
+                    }
+                    values.insert(temp);
+                }
+                
+
             }
         }
         
-        Game game(initial_board, board_size, max_moves);
+        if (values.size() > 1) {
+            std::cout << "no solution\n";  
+        }
+        else{
+            Game game(initial_board, board_size, max_moves);
 
-        game.solve(game.initial_state);
-        game.min_slides > max_moves ? std::cout << "no solution\n" : std::cout <<  game.min_slides << "\n";  
+            game.solve(game.initial_state);
+            game.min_slides > max_moves ? std::cout << "no solution\n" : std::cout <<  game.min_slides << "\n";  
+        }
     }
 
 

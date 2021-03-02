@@ -41,6 +41,7 @@
         "deque": "cpp",
         "queue": "cpp",
         "vector": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "xhash": "cpp"
     }
 }
