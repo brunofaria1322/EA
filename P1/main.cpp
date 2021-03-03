@@ -38,11 +38,10 @@ class Game{
             
             BoardState temp;
             
-            for (int i = 0; i < 4; i++) {
-                temp = copyBoardState(current);
-                temp = makeMove(temp, moves[i]);
-                if (!isEqual(current, temp)) { solve(temp); }
-            }
+            
+            
+
+            .
             
         }
 
@@ -261,11 +260,11 @@ int main() {
                     values.insert(temp);
                 }
                 
-
             }
         }
         
         if (values.size() > 1) {
+            //std::cout << "no solution\n";
             std::cout << "no solution\n";  
         }
         else{
