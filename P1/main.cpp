@@ -1,12 +1,14 @@
 #include <iostream>
 #include <math.h> 
- class BoardState{
+
+void PrintBoard(int board[20][20], int size);
+
+class BoardState{
     public:
         int moves;
         int board[20][20];
 };
 
-void PrintBoard(int board[20][20], int size);
 
 class Game{
     public:
@@ -46,6 +48,13 @@ class Game{
             
         }
 
+        /**
+         * Returns a copy of the current BoardState.
+         *
+         * @param previous BoardState to be copied.
+         * 
+         * @return new BoardState.
+         */
         BoardState copyBoardState(BoardState previous){
             BoardState new_board;
             new_board.moves = previous.moves + 1;
@@ -57,6 +66,13 @@ class Game{
             return new_board;
         }
 
+        /**
+         * Get the number of nonzero elements in board.
+         *
+         * @param board BoardState .
+         * 
+         * @return number of nonzero elements
+         */
         int getNumberOfElements(BoardState board) {
             int numbers = 0;
 
@@ -70,23 +86,14 @@ class Game{
             return numbers;
         }
 
-        bool isSolved(BoardState board) {
-            int numbers = 0;
-
-            for (int i = 0; i < board_size; i++) {
-                for (int j = 0; j < board_size; j++) {
-                    if (board.board[i][j]) { 
-                        numbers++; 
-                        if (numbers > 1) { 
-                            return false; 
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-
+        /**
+         * Checks if 2 Boards are equal
+         *
+         * @param board BoardState 1.
+         * @param new_board BoardState 2.
+         * 
+         * @return bool if the boards are equal
+         */
         bool isEqual(BoardState board, BoardState new_board) {
             for (int i = 0; i < board_size; i++) {
                 for (int j = 0; j < board_size; j++) {
@@ -102,6 +109,8 @@ class Game{
          *
          * @param board BoardState.
          * @param direction  Direction of thr move 'u'p, 'd'own, 'r'ightnand 'l'eft.
+         * 
+         * @return final BoardState (after move).
          */
         BoardState makeMove(BoardState board, char direction) {
             switch (direction) {
