@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unordered_set>
+#include <math.h> 
  class BoardState{
     public:
         int moves;
@@ -7,11 +7,6 @@
 };
 
 void PrintBoard(int board[20][20], int size);
-void PrintSet (std::unordered_set<int> s){
-    for (std::unordered_set<int>::iterator it = s.begin(); it != s.end(); it++) {
-        std::cout << *it << ' ';
-    }
-}
 
 class Game{
     public:
@@ -37,11 +32,12 @@ class Game{
             if (current.moves == max_moves || current.moves == min_slides - 1) { return; }
             
             BoardState temp;
-            
-            
-            
 
-            .
+            for (int i = 0; i < 4; i++) {
+                temp = copyBoardState(current);
+                temp = makeMove(temp, moves[i]);
+                if (!isEqual(current, temp)) { solve(temp); }
+            }
             
         }
 
@@ -234,7 +230,7 @@ int main() {
     int num_tests, board_size, max_moves;
     std::cin >> num_tests;
 
-    std::unordered_set<int> values;     //set to figure out if initial board is possible. 
+    int sum;  
     int temp;
 
     for (int i = 0; i < num_tests; i++) {
@@ -244,27 +240,19 @@ int main() {
         BoardState initial_board;
         initial_board.moves=0;
 
-        values.clear();
+        sum = 0;  
 
         for (int j = 0; j < board_size; j++) {
             for (int k = 0; k < board_size; k++) {
                 std::cin >> temp;
                 initial_board.board[j][k] = temp;
 
-                if (temp != 0){
-
-                    while (values.find(temp) != values.end()) {
-                        values.erase(temp);
-                        temp *= 2;
-                    }
-                    values.insert(temp);
-                }
+                sum += temp;
                 
             }
         }
         
-        if (values.size() > 1) {
-            //std::cout << "no solution\n";
+        if ((sum != 0) && (sum & (sum - 1))!=0 ) {     // if not 0 AND not power of
             std::cout << "no solution\n";  
         }
         else{
