@@ -11,7 +11,7 @@ void PrintBoard(int board[20][20], int size);
 class Game{
     public:
         int max_moves;
-        int min_slides = 51;
+        int min_slides;
         int board_size;
         char moves[4] = {'u', 'r', 'd', 'l'};
         BoardState initial_state;
@@ -19,17 +19,22 @@ class Game{
         Game(BoardState init_state, int brd_size, int max_plays){
             board_size = brd_size;
             max_moves = max_plays;
+            min_slides = max_plays + 1;
             initial_state = init_state;
         }
 
         void solve(BoardState current){
 
-            if (isSolved(current)) {
+            int num_of_elements = getNumberOfElements(current);
+
+            // acception case
+            if (num_of_elements < 2) {
                 if (min_slides > current.moves) { min_slides = current.moves; }
                 return;
             }
 
-            if (current.moves == max_moves || current.moves == min_slides - 1) { return; }
+            //rejection case
+            if (log2(num_of_elements) > max_moves - current.moves || log2(num_of_elements) >  min_slides - current.moves - 1) { return; }
             
             BoardState temp;
 
@@ -50,6 +55,19 @@ class Game{
                 }
             }
             return new_board;
+        }
+
+        int getNumberOfElements(BoardState board) {
+            int numbers = 0;
+
+            for (int i = 0; i < board_size; i++) {
+                for (int j = 0; j < board_size; j++) {
+                    if (board.board[i][j]) { 
+                        numbers++;
+                    }
+                }
+            }
+            return numbers;
         }
 
         bool isSolved(BoardState board) {
