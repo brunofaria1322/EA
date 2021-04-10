@@ -17,6 +17,7 @@ class Game{
         int board_size;
         char moves[4] = {'u', 'r', 'd', 'l'};
         BoardState initial_state;
+        BoardState temp;
 
         Game(BoardState init_state, int brd_size, int max_plays){
             board_size = brd_size;
@@ -38,7 +39,7 @@ class Game{
             //rejection case
             if (log2(num_of_elements) > max_moves - current.moves || log2(num_of_elements) >  min_slides - current.moves - 1) { return; }
             
-            BoardState temp;
+            
 
             for (int i = 0; i < 4; i++) {
                 temp = copyBoardState(current);
