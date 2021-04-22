@@ -49,9 +49,9 @@ class ARC{
                         if (j - k < 0){
                             break;
                         }
-                        temp +=  down[j - k][n - i];
+                        temp = mod_add(temp, down[j - k][n - i]);
                     }
-                    down[j][n-1 - i] +=  temp;
+                    down[j][n-1 - i] = mod_add(down[j][n-1 - i],  temp);
                 }
             }
             //printMatrix(down);
@@ -70,12 +70,12 @@ class ARC{
                         if (j - k < 0){
                             break;
                         }
-                        temp +=up[j - k][i-1];
+                        temp = mod_add(temp, up[j - k][i-1]);
                     }
-                    up[j][i] +=  temp;
+                    up[j][i] = mod_add(up[j][i] , temp);
 
                     if(down[j][i] != 0){
-                        counter = mod_add(counter,mod_abs(up[j][i] * down[j][i]));
+                        counter = mod_add(counter,mod_mul( up[j][i], down[j][i]));
                     }
                 }
             }
@@ -98,6 +98,28 @@ class ARC{
 
         int mod_sub(int a, int b) {
             return mod_add(a, -b);
+        }
+
+        // adapted from https://www.geeksforgeeks.org/how-to-avoid-overflow-in-modular-multiplication/
+        int mod_mul(int a, int b)
+        {
+            int res = 0; // Initialize result
+            
+            while (b > 0)
+            {
+                // If b is odd, add 'a' to result
+                if (b % 2 == 1)
+                    res = mod_add(res, a);
+        
+                // Multiply 'a' with 2
+                a = mod_add(a, a);
+        
+                // Divide b by 2
+                b /= 2;
+            }
+        
+            // Return result
+            return res;
         }
 
         void printMatrix(std::vector<std::vector<int>> mat){
