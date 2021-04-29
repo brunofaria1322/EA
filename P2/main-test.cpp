@@ -30,6 +30,12 @@ class ARC{
         void build(){
             //TODO: BOTTOM-UP
 
+            
+            int start;
+            if ((H-h)*2 < n-1){
+                start = (H-h)*2;
+            }
+
             //down values
             for (int i = 0; i < 2; i++){    //first 2 collumns are 1s (only 1 possibility)
                 for (int j = 2 - i; j < n - i; j++){    //starting on the 3rd space (minimum for a arc)
@@ -39,7 +45,7 @@ class ARC{
             
             int temp = 0;
             for (int i = 1; i<n-1; i++){    //lateral (room space)
-                if(i  > ((H-h)*2) -i){ break; }
+                //if(i >= H){ break; }
                 for (int j = 2; j <= (h-1) * i; j++){
                     if (j + h > H || j > (h-1)*(n-1 - i)){
                         break;
@@ -54,7 +60,7 @@ class ARC{
                     down[j][n-1 - i] = mod_add(down[j][n-1 - i],  temp);
                 }
             }
-            //printMatrix(down);
+            printMatrix(down);
 
             up[0][0] = 1;
             
@@ -80,7 +86,7 @@ class ARC{
                 }
             }
 
-            //printMatrix(up);
+            printMatrix(up);
 
             
         }

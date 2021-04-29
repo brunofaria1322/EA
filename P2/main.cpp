@@ -39,7 +39,7 @@ class ARC{
             
             int temp = 0;
             for (int i = 1; i<n-1; i++){    //lateral (room space)
-                if(i  > ((H-h)*2) -i){ break; }
+                //if(i >= H){ break; }
                 for (int j = 2; j <= (h-1) * i; j++){
                     if (j + h > H || j > (h-1)*(n-1 - i)){
                         break;

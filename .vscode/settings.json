@@ -42,6 +42,8 @@
         "queue": "cpp",
         "vector": "cpp",
         "algorithm": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "list": "cpp",
+        "unordered_set": "cpp"
     }
 }
