@@ -1,4 +1,4 @@
-g++ -std=c++17 -Wall -Wextra -O2 main-test.cpp -lm
+g++ -std=c++17 -Wall -Wextra -O2 main.cpp -lm
 ./a.exe < input.txt > output.txt
 ./a.exe < input1.txt > output1.txt
 ./a.exe < input2.txt > output2.txt

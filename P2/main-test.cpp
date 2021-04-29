@@ -83,7 +83,7 @@ class ARC{
                 }
             }
             */
-            //printMatrix(down);
+            printMatrix(down);
 
             up[0][0] = 1;
             
@@ -109,7 +109,7 @@ class ARC{
                 }
             }
 
-            //printMatrix(up);
+            printMatrix(up);
 
             
         }
