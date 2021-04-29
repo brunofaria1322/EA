@@ -30,14 +30,42 @@ class ARC{
         void build(){
             //TODO: BOTTOM-UP
 
+            
+            int start;
+            if ((H-h)*2 < n-1){
+                start = (H-h)*2;
+            }
+            else{
+                start = n-1;
+            }
+
             //down values
-            for (int i = 0; i < 2; i++){    //first 2 collumns are 1s (only 1 possibility)
-                for (int j = 2 - i; j < n - i; j++){    //starting on the 3rd space (minimum for a arc)
+            for (int i = 0; i < 2; i++){    //first 2 lines are 1s (only 1 possibility)
+                for (int j = 2 - i; j <= start - i; j++){    //starting on the 3rd space (minimum for a arc)
                     down[i][j] = 1;
                 }
             }
             
-            int temp = 0;
+            int temp = 0, number_ceil;
+            for (int i = 2; i <= H-h; i++){                     //lines till max height possible
+                number_ceil = std::ceil((float) i/(h-1));
+
+                //std::cout<<std::ceil(i/(h-1))<<" ceil of "<<i/(h-1)<<"\t var: "<<number_ceil<<"\n";
+                //std::cout<<i<<"\tfrom: "<<number_ceil<<"\tto: "<<start - number_ceil<<"\n";
+                
+                for (int j = number_ceil; j <= start - number_ceil; j++){       //starting on the 3rd space (minimum for a arc)
+                    temp = 0;
+                    for(int k = 1; k < h; k++){
+                        if (i - k < 0){
+                            break;
+                        }
+                        temp = mod_add(temp, down[i - k][j +1]);
+                    }
+                    down[i][j] = mod_add(down[i][j],  temp);
+                }
+            }
+
+            /*
             for (int i = 1; i<n-1; i++){    //lateral (room space)
                 //if(i >= H){ break; }
                 for (int j = 2; j <= (h-1) * i; j++){
@@ -54,6 +82,7 @@ class ARC{
                     down[j][n-1 - i] = mod_add(down[j][n-1 - i],  temp);
                 }
             }
+            */
             //printMatrix(down);
 
             up[0][0] = 1;
