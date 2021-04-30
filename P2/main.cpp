@@ -123,26 +123,10 @@ class ARC{
         }
 
         // adapted from https://www.geeksforgeeks.org/how-to-avoid-overflow-in-modular-multiplication/
-        int mod_mul(int a, int b)
-        {
-            int res = 0; // Initialize result
-            
-            while (b > 0)
-            {
-                // If b is odd, add 'a' to result
-                if (b % 2 == 1)
-                    res = mod_add(res, a);
-        
-                // Multiply 'a' with 2
-                a = mod_add(a, a);
-        
-                // Divide b by 2
-                b /= 2;
-            }
-        
-            // Return result
-            return res;
+        int mod_mul(int a, int b) {
+            return ((long long int)(a) * (long long int)(b)) % (long long int)(mod);
         }
+
 
         void printMatrix(std::vector<std::vector<int>> mat){
             
@@ -171,8 +155,6 @@ int main() {
         std::cin >> n;
         std::cin >> h;
         std::cin >> H;
-
-        //std::cout << n << ", "<< h << ", " << H << "\n";
 
         //if impossible
         if (H <= h || n < 3){
