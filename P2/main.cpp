@@ -122,7 +122,6 @@ class ARC{
             return mod_add(a, -b);
         }
 
-        // adapted from https://www.geeksforgeeks.org/how-to-avoid-overflow-in-modular-multiplication/
         int mod_mul(int a, int b) {
             return ((long long int)(a) * (long long int)(b)) % (long long int)(mod);
         }
