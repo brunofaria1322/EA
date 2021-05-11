@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <math.h> 
+#include <stack> 
 
 
 struct connection { 
@@ -10,10 +10,6 @@ struct connection {
 
 class Map{
     public:
-        int n;
-        int counter = 0;
-        std::vector<std::vector<connection>> connections;
-
         /**
          * Constructor of the class
          *
@@ -24,17 +20,61 @@ class Map{
 
             connections = std::vector( n , std::vector<connection> ());
 
-            this->readConnections(m);
+            this->low = std::vector(n, -1);
+            this->dfs = std::vector(n, -1);
+            this->inStack = std::vector(n, false);
 
-            this->printConnections();
+
+            this->readConnections(m);
+            //this->printConnections();
+
+            //this->findCircuits();
+            //this->printCircuits();
+
         }
 
-        
-        void build(){
-            
+        /**
+         * O(n + m) runs every vertex (n) and every edge (m)
+         * 
+         */
+        void findCircuits(){
+            for (int i = 0; i< n ; i++){
+                if (dfs[i] == -1){
+                    this->Tarjan(i);
+                }
+            }
+        }
+
+        /**
+         * Answer to question 1
+         */
+        int getNumberOfCircuits(){
+            return circuits.size();
+        }
+
+
+        /**
+         * Answer to question 2
+         */
+        int getNumberPOIsInLargestCircuit(){
+            return largest_circuit_POIs_number;
         }
 
     private:
+        int n;
+        std::vector<std::vector<connection>> connections;
+
+        // TARJAN
+        int t = 1;
+        std::vector<int> low;
+        std::vector<int> dfs;
+
+        std::stack<int> S;
+        std::vector<bool> inStack;
+        
+        std::vector< std::vector<int> > circuits;
+
+        int largest_circuit_POIs_number = 0;
 
         void readConnections(int num_connections){
             int A, B, D;
@@ -50,6 +90,8 @@ class Map{
 
         void printConnections(){
 
+            std::cout << "Connections:\n";
+            
             int counter = 0;
             for (std::vector<connection> line : connections ){
                 std::cout << counter << " ->\t";
@@ -63,7 +105,79 @@ class Map{
 
         }
 
+        /**
+         * Finds Strongly Connected Components
+         *  
+         */
+        void Tarjan(int v){
+            low[v] = t;
+            dfs[v] = t;
+            t++;
+
+            S.push(v);
+            inStack[v] = true;
+            
+            int w;
+            for (connection con : connections[v]){
+                w = con.POI;
+                if(dfs[w]==-1){
+                    this->Tarjan(w);
+
+                    if(low[v]>low[w]){
+                        low[v] = low[w];
+                    }
+                }
+                else if (inStack[w] && low[v]>dfs[w]) {
+                    low[v] = dfs[w];
+                }
+            }
+
+            if (low[v] == dfs[v]){
+
+                std::vector<int> C;
+                
+                do{
+                    w = S.top();
+                    S.pop();
+                    inStack[w] = false;
+
+                    C.push_back(w);
+
+                }while ( w != v);
+                
+                if (C.size() > 1){
+                    circuits.push_back(C);
+
+                    if ( (int) C.size() > largest_circuit_POIs_number){
+                        largest_circuit_POIs_number = C.size();
+                    }
+                }
+            }
+
+        }
+
+        void printCircuits(){
+            std::cout << "Circuits:\n";
+
+            for (std::vector<int> line : circuits ){
+                for (int v : line ) {
+                    std::cout << v << ' ';
+                }
+                std::cout << '\n';
+            }
+            std::cout << '\n';
+
+        }
+
 };
+
+
+void notPossible( int q ){
+    for (int j = 0; j < q-1; j++){
+        std::cout << "0 ";  
+    }
+    std::cout << "0\n";  //last one doesn't have space at end
+}
 
 
 int main() {
@@ -72,6 +186,7 @@ int main() {
     std::cin.tie(0);
 
     int t, n, m, q;
+    int num_of_circuits = 0;
     std::cin >> t;      //number of test cases
 
 
@@ -82,37 +197,41 @@ int main() {
 
         //if impossible
         if (n < 2){
-            for (int j = 0; j < q-1; j++){
-                std::cout << "0 ";  
-            }
-            std::cout << "0\n";  //last one doesn't have space at end
+            notPossible(q);
         }
         else{
             Map map(n,m);
             
-            switch (q){
+            map.findCircuits();
+            num_of_circuits = map.getNumberOfCircuits();
 
-                case 1:
-                    /* code */
-                    break;
-                case 2:
-                    /* code */
-                    break;
-                case 3:
-                    /* code */
-                    break;
-                case 4:
-                    /* code */
-                    break;
-                
-                default:
-                    std::cout << "Something's wrong!\n";
-                    break;
+            if(num_of_circuits == 0){
+                notPossible(q);
             }
+            else{ 
+                switch (q){
+
+                    case 1:
+                        std::cout << map.getNumberOfCircuits() << '\n';  
+                        break;
+                    case 2:
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        break;
+                    case 3:
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        break;
+                    case 4:
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        break;
+                    
+                    default:
+                        std::cout << "Something's wrong!\n";
+                        break;
+                }
+            }
+
         }
         
     }
-
-
     return 0;
 }
