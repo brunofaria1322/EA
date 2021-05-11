@@ -1,10 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <stack> 
+#include <stack>
+#include <unordered_set>
+#include <algorithm>
 
 
 struct connection { 
-    int POI; 
+    int POI_A;
+    int POI_B;
     int distance; 
 };
 
@@ -60,6 +63,58 @@ class Map{
             return largest_circuit_POIs_number;
         }
 
+        /**
+         * 
+         * 
+         */
+        void findBikeLanes(){
+            int bike_lane_length;
+            
+            this->set = std::vector(this->n, -1);
+            this->rank = std::vector(this->n, -1);
+
+            for (std::unordered_set<int> circuit : circuits ){
+                std::vector< connection > edges;
+
+                for(int v : circuit){
+                    for(connection con : connections[v]){
+                        if(circuit.find(con.POI_B) != circuit.end()){
+                            edges.push_back(con);
+                        }
+                    }
+                }
+
+                std::sort(edges.begin(), edges.end(), [](const connection &a, const connection &b){
+                    return a.distance < b.distance;
+                });
+
+                //printEdges(edges);
+
+                bike_lane_length = this->Kruskal(circuit, edges);
+
+                if (bike_lane_length > longest_bike_lane_length){
+                    longest_bike_lane_length = bike_lane_length;
+                }
+
+                total_bike_lanes_length += bike_lane_length;
+            }
+        }
+
+        /**
+         * Answer to question 3
+         */
+        int getLongestBikeLaneLength(){
+            return longest_bike_lane_length;
+        }
+
+
+        /**
+         * Answer to question 4
+         */
+        int getTotalBikeLanesLength(){
+            return total_bike_lanes_length;
+        }
+
     private:
         int n;
         std::vector<std::vector<connection>> connections;
@@ -72,9 +127,16 @@ class Map{
         std::stack<int> S;
         std::vector<bool> inStack;
         
-        std::vector< std::vector<int> > circuits;
+        std::vector< std::unordered_set<int> > circuits;
 
         int largest_circuit_POIs_number = 0;
+
+        //Kruskal
+        std::vector<int> set;
+        std::vector<int> rank;
+
+        int longest_bike_lane_length = 0;
+        int total_bike_lanes_length = 0;
 
         void readConnections(int num_connections){
             int A, B, D;
@@ -84,7 +146,7 @@ class Map{
                 std::cin >> B;   //POI B
                 std::cin >> D;   //distance between POIA to POIB (one way)
 
-                connections[A-1].push_back({B-1, D});
+                connections[A-1].push_back({A-1, B-1, D});
             }
         }
 
@@ -96,7 +158,7 @@ class Map{
             for (std::vector<connection> line : connections ){
                 std::cout << counter << " ->\t";
                 for ( connection con : line ) {
-                    std::cout << con.POI << " - " << con.distance << '\t';
+                    std::cout << con.POI_B << " - " << con.distance << '\t';
                 }
                 std::cout << '\n';
                 counter++;
@@ -119,7 +181,7 @@ class Map{
             
             int w;
             for (connection con : connections[v]){
-                w = con.POI;
+                w = con.POI_B;
                 if(dfs[w]==-1){
                     this->Tarjan(w);
 
@@ -134,14 +196,14 @@ class Map{
 
             if (low[v] == dfs[v]){
 
-                std::vector<int> C;
+                std::unordered_set<int> C;
                 
                 do{
                     w = S.top();
                     S.pop();
                     inStack[w] = false;
 
-                    C.push_back(w);
+                    C.insert(w);
 
                 }while ( w != v);
                 
@@ -159,7 +221,7 @@ class Map{
         void printCircuits(){
             std::cout << "Circuits:\n";
 
-            for (std::vector<int> line : circuits ){
+            for (std::unordered_set<int> line : circuits ){
                 for (int v : line ) {
                     std::cout << v << ' ';
                 }
@@ -168,6 +230,79 @@ class Map{
             std::cout << '\n';
 
         }
+        
+        bool compareConnections(const connection &a, const connection &b){
+            return a.distance < b.distance;
+        }
+
+        int find_set(int a){
+
+            if (this->set[a] != a){
+                this->set[a] = find_set(this->set[a]);
+            }
+            return this->set[a];
+        }
+
+        void link(int a, int b){
+
+            if (rank[a] > rank[b]){
+                set[b] = a;
+            }
+            else{
+                set[a] = b;
+            }
+            if (rank[a] == rank[b]){
+                rank[b]++;
+            }
+        }
+
+        /**
+         * Finds Minimum Spanning Tree
+         * 
+         * @param edges -> sorted list with connectons in circuit
+         *  
+         */
+        int Kruskal(std::unordered_set<int> circuit, std::vector< connection > edges){
+            
+            int lane_length = 0;
+            int set_A, set_B;
+
+            for( int v : circuit){
+                //make_set(v)
+                
+                set[v] = v;
+                rank[v] = 0;
+
+            }
+
+            // edges already sorted !!
+
+            for ( connection con : edges ){
+                set_A = find_set(con.POI_A);
+                set_B = find_set(con.POI_B);
+
+                if ( set_A != set_B ){
+                    lane_length += con.distance;
+                    link(set_A, set_B);
+                }
+            }
+
+            return lane_length;
+        }
+
+        
+
+        void printEdges( std::vector< connection > edges ){
+            std::cout << "Edges:\n";
+
+            for (connection con : edges ){
+                std::cout << con.POI_A << " - " << con.POI_B << " : " << con.distance << '\n';
+            }
+            std::cout << '\n';
+
+        }
+
+        
 
 };
 
@@ -215,13 +350,15 @@ int main() {
                         std::cout << map.getNumberOfCircuits() << '\n';  
                         break;
                     case 2:
-                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit() << '\n'; 
                         break;
                     case 3:
-                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        map.findBikeLanes();
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit() << ' ' << map.getLongestBikeLaneLength() << '\n'; 
                         break;
                     case 4:
-                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit()<< '\n'; 
+                        map.findBikeLanes();
+                        std::cout << map.getNumberOfCircuits() << ' ' <<  map.getNumberPOIsInLargestCircuit() << ' ' << map.getLongestBikeLaneLength() << ' ' <<  map.getTotalBikeLanesLength() << '\n'; 
                         break;
                     
                     default:
